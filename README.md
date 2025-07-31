@@ -69,3 +69,24 @@ By tuning hyperparameters like learning rate, dropout, and network depth, the mo
 
 ##  Repository Structure
 
+📄 Advanced Neural Network Models for Precision Real Estate.Rmd # Full report in R Markdown
+📄 Advanced Neural Network Models for Precision Real Estate.pdf # Rendered report
+📄 README.md # Project summary
+
+
+---
+
+##  Key Takeaways
+
+- Achieved highly accurate house price predictions with a neural network (RMSE = **0.0199**), outperforming Ridge and Linear Regression by a wide margin.
+- Identified `grade`, `sqft_living`, and `waterfront` as the most influential features, improving model transparency.
+- Ridge Regression explained **85.39% of variance**, helping mitigate feature redundancy and overfitting risks.
+- Neural networks proved especially effective for capturing complex pricing patterns — particularly in high-value homes.
+
+---
+
+## 📬 Contact
+
+Created by **Enoghayin Jillient Imasuen**  
+🔗 [GitHub](https://github.com/enoimasuen) | [LinkedIn](https://www.linkedin.com/in/enoghayin-jillient-imasuen-9080b2236?)
+

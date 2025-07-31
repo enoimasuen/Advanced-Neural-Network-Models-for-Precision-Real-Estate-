@@ -1,0 +1,709 @@
+---
+title: "HARVARD EXTENSION SCHOOL"
+subtitle: "EXT CSCI E-106 Model Data Class Group Project Template"
+author:
+- Author One Zongmin Liu
+- Author Two Enoghayin Imasuen
+
+tags: [logistic, neuronal networks, etc..]
+abstract: |
+  This is the location for your abstract.
+
+  It must consist of two paragraphs.
+date: "`r format(Sys.time(), '%d %B %Y')`"
+geometry: margin=1.3cm
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+  html_document:
+    df_print: paged
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+\newpage
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+HouseSales<-read.csv("KC_House_Sales.csv")
+```
+\newpage
+## House Sales in King County, USA data to be used in the Final Project
+
+| Variable| Description |
+| :-------:| :------- |
+| id| **Unique ID for each home sold (it is not a predictor)**    |
+| date| *Date of the home sale*    |
+| price| *Price of each home sold*    |
+| bedrooms| *Number of bedrooms*    |
+| bathrooms| *Number of bathrooms, where ".5" accounts for a bathroom with a toilet but no shower*    |
+| sqft_living| *Square footage of the apartment interior living space*    |
+| sqft_lot| *Square footage of the land space*    |
+| floors| *Number of floors*    |
+| waterfront| *A dummy variable for whether the apartment was overlooking the waterfront or not*    |
+| view| *An index from 0 to 4 of how good the view of the property was*    |
+| condition| *An index from 1 to 5 on the condition of the apartment,*    |
+| grade| *An index from 1 to 13, where 1-3 falls short of building construction and design, 7 has an average level of construction and design, and 11-13 has a high-quality level of construction and design.*    |
+| sqft_above| *The square footage of the interior housing space that is above ground level*    | 
+| sqft_basement| *The square footage of the interior housing space that is below ground level*    |
+| yr_built| *The year the house was initially built*    |
+| yr_renovated| *The year of the house’s last renovation*    |
+| zipcode| *What zipcode area the house is in*    |
+| lat| *Latitude*    |
+| long| *Longitude*    |
+| sqft_living15| *The square footage of interior housing living space for the nearest 15 neighbors*    |
+| sqft_lot15| *The square footage of the land lots of the nearest 15 neighbors*    |
+\newpage
+## Instructions:
+0.  Join a team with your fellow students with appropriate size (Four Students total)
+1.  Load and Review the dataset named "KC_House_Sales'csv
+2.	Create the train data set which contains 70% of the data and use set.seed (1023). The remaining 30% will be your test data set.
+3.	Investigate the data and combine the level of categorical variables if needed and drop variables as needed. For example, you can drop id, Latitude, Longitude, etc.
+4.	Build a regression model to predict price. 
+5.	Create scatter plots and a correlation matrix for the train data set. Interpret the possible relationship between the response.
+6.	Build the best multiple linear models by using the stepwise selection method. Compare the performance of the best two linear models. 
+7.	Make sure that model assumption(s) are checked for the final model. Apply remedy measures (transformation, etc.) that helps satisfy the assumptions. 
+8.	Investigate unequal variances and multicollinearity. If necessary, apply remedial methods (WLS, Ridge, Elastic Net, Lasso, etc.). 
+9.	Build an alternative model based on one of the following approaches to predict price: regression tree, NN, or SVM.  Check the applicable model assumptions. Explore using a logistic regression. 
+10.	Use the test data set to assess the model performances from above.
+11.	Based on the performances on both train and test data sets, determine your primary (champion) model and the other model which would be your benchmark model.
+12.	Create a model development document that describes the model following this template, input the name of the authors, Harvard IDs, the name of the Group, all of your code and calculations, etc..:
+
+## Due Date: December 18th, 2023 at 11:59 pm EST
+
+**Notes**
+**No typographical errors, grammar mistakes, or misspelled words, use English language**
+**All tables need to be numbered and describe their content in the body of the document**
+**All figures/graphs need to be numbered and describe their content**
+**All results must be accurate and clearly explained for a casual reviewer to fully understand their purpose and impact**
+**Submit both the RMD markdown file and PDF with the sections with appropriate explanations. A more formal document in Word can be used in place of the pdf file but must include all appropriate explanations.**
+
+Executive Summary
+
+This section will describe the model usage, your conclusions and any regulatory and internal requirements. In a real world scneario, this section is for senior management who do not need to know the details. They need to know high level (the purpose of the model, limitations of the model and any issues).
+
+
+\newpage
+## I. Introduction (5 points)
+
+*This section needs to introduce the reader to the problem to be resolved, the purpose, and the scope of the statistical testing applied. What you are doing with your prediction? What is the purpose of the model? What methods were trained on the data, how large is the test sample, and how did you build the model?*
+
+
+
+
+\newpage
+## II. Description of the data and quality (15 points)
+
+*Here you need to review your data, the statistical test applied to understand the predictors and the response and how are they correlated. Extensive graph analysis is recommended. Is the data continuous, or categorical, do any transformation needed? Do you need dummies? *
+
+
+
+
+\newpage
+## III. Model Development Process (15 points)
+
+*Build a regression model to predict price.  And of course,  create the train data set which contains 70% of the data and use set.seed (1023). The remaining 30% will be your test data set. Investigate the data and combine the level of categorical variables if needed and drop variables. For example, you can drop id, Latitude, Longitude, etc. *
+
+# step1 Load necessary libraries
+library(readr)
+
+file_path <- "C:/Users/86155/Downloads/KC_House_Sales (1)/KC_House_Sales.csv"
+
+# 使用read.csv函数加载CSV文件
+kc_house_data <- read.csv(file_path)
+
+# 现在 'data' 变量包含了CSV文件中的数据
+
+head(kc_house_data)
+
+# Summary of the dataset
+summary(kc_house_data)
+
+
+
+# step2 Set seed for reproducibility
+set.seed(1023)
+
+# Split the data into training and testing sets
+library(caret)
+splitIndex <- createDataPartition(kc_house_data$price, p = 0.7, list = FALSE)
+train_data <- kc_house_data[splitIndex, ]
+test_data <- kc_house_data[-splitIndex, ]
+
+
+
+# step3 Convert price from a string to a number if necessary
+# 70% TRAINING，30% TESTING
+trainIndex <- createDataPartition(kc_house_data$price, p = 0.7, list = FALSE, times = 1)
+train_data <- kc_house_data[trainIndex, ]
+test_data <- kc_house_data[-trainIndex, ]
+
+# I need to convert the data type, such as a price from a string to a number
+kc_house_data$price <- as.numeric(gsub("[\\$,]", "", kc_house_data$price))
+
+# REMOVE NO NEED COLUMNS
+train_data <- train_data[, !(names(train_data) %in% c("id", "lat", "long"))]
+test_data <- test_data[, !(names(test_data) %in% c("id", "lat", "long"))]
+
+install.packages("sandwich")
+
+
+library(lmtest)
+library(sandwich)
+
+
+
+
+# step4 BUILD LINER REGRESSION
+model <- lm(price ~ ., data = train_data)
+
+# A linear regression model is used to predict the target variables of the test data set
+predicted_values <- predict(model, newdata = test_data)
+
+#  CALCULATE（MSE）
+mse_linear <- mean((test_data$price - predicted_values)^2)
+
+# CALCULATE（RMSE）
+rmse_linear <- sqrt(mse_linear)
+
+# print MSE and RMSE
+cat("Linear Regression MSE:", mse_linear, "\n")
+cat("Linear Regression RMSE:", rmse_linear, "\n")
+
+print(predicted_values)
+
+print(model)
+
+
+# step 5 Scatter plot matrix for a few key variables (choose based on your dataset)
+pairs(~price + sqft_living + bedrooms + bathrooms, data = train_data)
+
+# Correlation matrix for all numeric variables
+correlation_matrix <- cor(train_data[, sapply(train_data, is.numeric)])
+print(correlation_matrix)
+
+
+
+
+
+\newpage
+## IV. Model Performance Testing (15 points)
+
+*Use the test data set to assess the model performances. Here, build the best multiple linear models by using the stepwise both ways selection method. Compare the performance of the best two linear models. Make sure that model assumption(s) are checked for the final linear model. Apply remedy measures (transformation, etc.) that helps satisfy the assumptions. In particular you must deeply investigate unequal variances and multicollinearity. If necessary, apply remedial methods (WLS, Ridge, Elastic Net, Lasso, etc.). *
+
+
+# step 6,7,8 Load the necessary library for stepwise selection
+library(MASS)
+
+# Perform stepwise selection based on AIC
+stepwise_model <- stepAIC(model, direction = "both")
+summary(stepwise_model)
+
+# Build an alternative model for comparison
+# You may choose different variables based on your analysis
+alternative_model <- lm(price ~ sqft_living + grade + bathrooms, data = train_data)
+summary(alternative_model)
+
+# Compare the models using AIC
+aic_stepwise <- AIC(stepwise_model)
+aic_alternative <- AIC(alternative_model)
+cat("AIC for Stepwise Model:", aic_stepwise, "\n")
+cat("AIC for Alternative Model:", aic_alternative, "\n")
+
+# Check for Linearity and Homoscedasticity
+plot(stepwise_model$residuals ~ stepwise_model$fitted.values)
+abline(h = 0, col = "red")
+
+# Check for Normality of Residuals
+qqnorm(stepwise_model$residuals)
+qqline(stepwise_model$residuals)
+
+
+# Apply transformations if necessary
+# This is a placeholder. The actual transformation depends on your findings.
+# For example, log transformation of the response variable
+train_data$price_log <- log(train_data$price)
+model_log <- lm(price_log ~ ., data = train_data)
+
+
+# Rebuild the model with the transformed response variable
+model_log <- lm(price_log ~ ., data = train_data)
+summary(model_log)
+
+# Check for Linearity and Homoscedasticity of the new model
+plot(model_log$residuals ~ model_log$fitted.values)
+abline(h = 0, col = "red")
+
+# Check for Normality of Residuals in the new model
+qqnorm(model_log$residuals)
+qqline(model_log$residuals)
+
+# Check for normality of residuals
+hist(residuals(stepwise_model))
+
+# Check for homoscedasticity
+plot(residuals(stepwise_model) ~ fitted(stepwise_model))
+
+# If assumptions are violated, consider transformations like log transformation
+model_transformed <- lm(log(price) ~ ., data = train_data)
+
+# Check the summary of the log-transformed model
+summary(model_transformed)
+
+# Predict and calculate residuals for the log-transformed model
+predicted_log <- predict(model_transformed, newdata = test_data)
+residuals_log <- log(test_data$price) - predicted_log
+
+# Calculate RMSE for the log-transformed model
+rmse_log <- sqrt(mean(residuals_log^2))
+cat("Log-Transformed Model RMSE:", rmse_log, "\n")
+
+# Investigate Unequal Variances (Heteroscedasticity)
+#Scatter plot of residuals vs. fitted values
+plot(fitted(stepwise_model), residuals(stepwise_model),
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "Residuals vs Fitted Values")
+abline(h = 0, col = "red")  # Adds a horizontal line at 0 for reference
+
+# Histogram of residuals
+hist(residuals(stepwise_model),
+     breaks = "Sturges",  # This parameter sets the method of calculating number of bins
+     main = "Histogram of Residuals",
+     xlab = "Residuals")
+
+
+#The heteroscedasticity is present, I can apply a Box-Cox transformation to the response variable.
+
+library(MASS)
+
+# Perform Box-Cox transformation
+boxcox_result <- boxcox(stepwise_model, lambda = seq(-0.5, 0.5, by = 0.1))
+
+print(boxcox_result)
+
+# Find the optimal lambda
+optimal_lambda <- boxcox_result$x[which.max(boxcox_result$y)]
+cat("Optimal lambda for Box-Cox transformation:", optimal_lambda, "\n")
+
+# Apply the Box-Cox transformation with the optimal lambda
+# Here you might need to re-partition your data after transformation if necessary
+train_data$price_transformed <- (train_data$price^optimal_lambda - 1) / optimal_lambda
+
+library(car)
+# Calculate VIF
+vif_model <- vif(stepwise_model)
+print(vif_model)
+
+# If high VIFs are detected, multicollinearity is present
+
+library(glmnet)
+
+# Prepare matrix for glmnet
+predictors_matrix <- model.matrix(~ . - price, data = train_data)[, -1]  # Exclude intercept
+response_vector <- train_data$price
+
+# Perform Ridge Regression
+cv_ridge <- cv.glmnet(predictors_matrix, response_vector, alpha = 0)
+
+# Get the optimal lambda value from cross-validation
+optimal_lambda_ridge <- cv_ridge$lambda.min
+cat("Optimal lambda for Ridge Regression:", optimal_lambda_ridge, "\n")
+
+# Fit the final Ridge Regression model
+final_ridge_model <- glmnet(predictors_matrix, response_vector, alpha = 0, lambda = optimal_lambda_ridge)
+
+print(final_ridge_model)
+
+# Identify missing columns in test data
+missing_columns <- setdiff(training_predictors, names(test_data))
+
+# Print missing columns for inspection
+print(missing_columns)
+
+
+# Identify character columns
+char_cols <- sapply(test_data_predictors, is.character)
+print(names(test_data_predictors)[char_cols])
+
+# Convert these columns to appropriate numerical format
+# For example, if 'some_column' is a character column, convert it to numeric or factor as appropriate
+test_data_predictors$some_column <- as.numeric(as.factor(test_data_predictors$some_column))
+
+# After converting, make sure all columns are numeric
+test_data_predictors <- data.frame(lapply(test_data_predictors, function(x) ifelse(is.character(x), as.numeric(as.factor(x)), x)))
+
+# Retry prediction
+predicted_ridge <- predict(final_ridge_model, s = optimal_lambda_ridge, newx = as.matrix(test_data_predictors))
+
+# Calculate residuals and RMSE
+residuals_ridge <- test_data$price - predicted_ridge  # Ensure this is the correct column for the actual price
+rmse_ridge <- sqrt(mean(residuals_ridge^2))
+print(rmse_ridge)
+
+
+
+# ridge regression
+library(glmnet)
+ridge_model <- glmnet(as.matrix(train_data[-which(names(train_data) == "price")]), train_data$price, alpha = 0)
+
+
+# see basic information of the model
+print(ridge_model)
+
+# coefficient route plot
+plot(ridge_model)
+
+# check every column data type
+sapply(train_data, class)
+
+# keep number columns
+numeric_data <- train_data[, sapply(train_data, is.numeric)]
+
+# use cv.glmnet
+cv_model <- cv.glmnet(as.matrix(numeric_data[-which(names(numeric_data) == "price")]), numeric_data$price, alpha = 0)
+
+# optimal lambda  got
+
+
+
+best_lambda <- cv_model$lambda.min
+print(best_lambda)
+
+# use lambda to build model
+best_ridge_model <- glmnet(as.matrix(train_data[-which(names(train_data) == "price")]), train_data$price, alpha = 0, lambda = best_lambda)
+
+# see
+coef(best_ridge_model)
+
+
+install.packages("MASS")
+
+library(MASS)
+
+# Get the predictors for the training ridge regression model
+predictors <- colnames(as.matrix(train_data[-which(names(train_data) == "price")]))
+
+# Make sure the test set contains these same variables
+test_data_consistent <- test_data[, predictors, drop = FALSE]
+
+# Convert the test data set into a matrix
+matrix_test_data <- as.matrix(test_data_consistent)
+
+
+numeric_test_data <- test_data[sapply(test_data, is.numeric)]
+
+
+if(ncol(numeric_test_data) != ncol(as.matrix(train_data[-which(names(train_data) == "price")]))) {
+  stop("The number of variables in numeric_test_data does not match the model's variables.")
+}
+
+
+matrix_test_data <- as.matrix(numeric_test_data)
+
+
+# ridge model prediction
+test_predictions_ridge <- predict(ridge_model, newx = matrix_test_data)
+
+
+# remove non-numberic
+numeric_complete_data <- complete_data[sapply(complete_data, is.numeric)]
+
+# try agian for scatter
+pairs(numeric_complete_data)
+
+
+
+
+
+# Or use a Q-Q plot to check for normality
+qqnorm(residuals(stepwise_model))
+qqline(residuals(stepwise_model), col = "red")
+
+# If the Box-Cox transformation was considered, you might need to find the optimal lambda again
+# and apply it to the model. But remember, Box-Cox can only be applied to positive data.
+
+# Alternatively, you can use the `lmtest` package to conduct a Breusch-Pagan test to formally test heteroscedasticity
+library(lmtest)
+bptest(stepwise_model)
+
+
+# check homoscedasticity
+plot(fitted(stepwise_model), residuals(stepwise_model))
+abline(h = 0, col = "red")
+
+
+# use lm() weights parameters to use WLS
+wls_model <- lm(price ~ ., data = train_data, weights = 1/(fitted(stepwise_model)^2))
+
+# check WLS model residuals
+plot(residuals(wls_model) ~ fitted(wls_model))
+abline(h = 0, col = "red")
+
+
+
+
+\newpage
+## V. Challenger Models (15 points)
+
+*Build an alternative model based on one of the following approaches to predict price: regression tree, NN, or SVM. Explore using a logistic regression. Check the applicable model assumptions. Apply in-sample and out-of-sample testing, backtesting and review the comparative goodness of fit of the candidate models. Describe step by step your procedure to get to the best model and why you believe it is fit for purpose.*
+
+# step 9 neural network
+# Load the required packages
+library(nnet)
+
+# Removes non-numeric columns
+numeric_train_data <- train_data[sapply(train_data, is.numeric)]
+
+# restandardize
+maxs <- apply(numeric_train_data, 2, max)
+mins <- apply(numeric_train_data, 2, min)
+scaled_train_data <- as.data.frame(scale(numeric_train_data, center = mins, scale = maxs - mins))
+
+
+# Build a neural network model
+nn_model <- nnet(price ~ ., data = scaled_train_data, size = 10, linout = TRUE, maxit = 1000)
+
+# Make sure that test_data contains only the same columns as train_data
+test_data_numeric <- test_data[sapply(test_data, is.numeric)]
+
+# Standardize the test data
+scaled_test_data <- as.data.frame(scale(test_data_numeric, center = mins, scale = maxs - mins))
+
+# predictions
+nn_predictions <- predict(nn_model, newdata = scaled_test_data)
+
+# calculate MSE and RMSE
+mse_nn <- mean((nn_predictions - scaled_test_data$price)^2)
+rmse_nn <- sqrt(mse_nn)
+print(mse_nn)
+print(rmse_nn)
+
+##explore logistic regression
+
+# Assume train_data and test_data are divided
+
+
+median_price <- median(train_data$price, na.rm = TRUE)
+train_data$price_category <- ifelse(train_data$price > median_price, 1, 0)
+test_data$price_category <- ifelse(test_data$price > median_price, 1, 0)
+
+
+# All variables other than the original price are selected for prediction
+independent_vars <- setdiff(names(train_data), c("price", "price_category"))
+
+
+logistic_model <- glm(formula = price_category ~ ., 
+                      data = train_data[, c("price_category", independent_vars)], 
+                      family = binomial)
+
+summary(logistic_model)
+
+
+# predict for test dataset
+logistic_predictions <- predict(logistic_model, newdata = test_data[, independent_vars], type = "response")
+
+# Convert probabilities to categorical predictions (using 0.5 as the threshold)
+predicted_category <- ifelse(logistic_predictions > 0.5, 1, 0)
+
+# calculate accuracy
+accuracy <- mean(predicted_category == test_data$price_category)
+
+# Calculate other performance metrics: confusion matrix, accuracy, recall rate, etc
+confusion_matrix <- table(Predicted = predicted_category, Actual = test_data$price_category)
+precision <- confusion_matrix[2, 2] / sum(confusion_matrix[2, ])
+recall <- confusion_matrix[2, 2] / sum(confusion_matrix[, 2])
+
+
+print(paste("Accuracy of Logistic Regression: ", accuracy))
+
+
+
+summary(logistic_model)
+
+# visualizaion
+hist(logistic_predictions, main = "Histogram of Predicted Probabilities", xlab = "Predicted Probabilities")
+
+# ROC curve analysis
+library(pROC)
+roc_curve <- roc(test_data$price_category, logistic_predictions)
+plot(roc_curve, main = "ROC Curve for Logistic Regression")
+auc(roc_curve)
+
+
+
+# Assuming we have already calculated RMSE for all previous models
+
+# Compare RMSE of all models
+cat("RMSE for Initial Linear Model:", rmse_linear, "\n")
+cat("RMSE for Stepwise Linear Model:", rmse_step, "\n")
+cat("RMSE for Alternative Linear Model:", rmse_alternative, "\n")
+cat("RMSE for Neural Network Model:", nn_rmse, "\n")
+
+# Determine the champion model based on the lowest RMSE
+rmse_values <- c(rmse_linear, rmse_step, rmse_alternative, nn_rmse)
+model_names <- c("Initial Linear Model", "Stepwise Linear Model", "Alternative Linear Model", "Neural Network Model")
+
+# Find the index of the minimum RMSE
+min_rmse_index <- which.min(rmse_values)
+champion_model_name <- model_names[min_rmse_index]
+
+cat("Champion Model: ", champion_model_name, " with RMSE: ", rmse_values[min_rmse_index], "\n")
+
+# If needed, you can also store the champion model object in a variable
+champion_model <- switch(champion_model_name,
+                         "Initial Linear Model" = model,
+                         "Stepwise Linear Model" = step_model,
+                         "Alternative Linear Model" = model_alternative,
+                         "Neural Network Model" = nn_model)
+
+# The benchmark model can be the one with the second-lowest RMSE
+# Remove the champion model RMSE and name from the lists
+rmse_values <- rmse_values[-min_rmse_index]
+model_names <- model_names[-min_rmse_index]
+
+# Find the index of the next lowest RMSE
+next_min_rmse_index <- which.min(rmse_values)
+benchmark_model_name <- model_names[next_min_rmse_index]
+
+cat("Benchmark Model: ", benchmark_model_name, " with RMSE: ", rmse_values[next_min_rmse_index], "\n")
+
+# Similarly, store the benchmark model object if needed
+benchmark_model <- switch(benchmark_model_name,
+                          "Initial Linear Model" = model,
+                          "Stepwise Linear Model" = step_model,
+                   
+
+
+
+
+\newpage
+## VI. Model Limitation and Assumptions (15 points)
+
+*Based on the performances on both train and test data sets, determine your primary (champion) model and the other model which would be your benchmark model. Validate your models using the test sample. Do the residuals look normal? Does it matter given your technique? How is the prediction performance using Pseudo R^2, SSE, RMSE?  Benchmark the model against alternatives. How good is the relative fit? Are there any serious violations of the model assumptions? Has the model had issues or limitations that the user must know? (Which assumptions are needed to support the Champion model?)* 
+
+library(Metrics)
+library(lmtest)
+library(ggplot2)
+
+# Define a function to evaluate the model
+evaluate_model <- function(model, data, target_column) {
+  predictions <- predict(model, newdata = data)
+  residuals <- data[[target_column]] - predictions
+  
+  # Calculate Pseudo R^2, SSE, RMSE
+  sse <- sum(residuals^2)
+  rmse <- sqrt(mean(residuals^2))
+  pseudo_r2 <- 1 - (sse / sum((data[[target_column]] - mean(data[[target_column]]))^2))
+  
+  # Check the normality of residuals
+  shapiro_test <- shapiro.test(residuals)
+  
+  # Additional evaluation metrics and tests can be added here
+  
+  # Return evaluation results
+  return(list(pseudo_r2 = pseudo_r2, sse = sse, rmse = rmse, normality_p_value = shapiro_test$p.value))
+}
+
+# Use a test dataset to validate each model
+test_data <- ... # Your test dataset
+target_column <- ... # Your target column name
+
+# Evaluate each model
+results_nn <- evaluate_model(nn_model, test_data, target_column)
+results_ridge <- evaluate_model(ridge_model, test_data, target_column)
+results_stepwise <- evaluate_model(stepwise_model, test_data, target_column)
+results_linear <- evaluate_model(linear_model, test_data, target_column)
+results_log <- evaluate_model(log_model, test_data, target_column)
+results_transformed <- evaluate_model(model_transformed, test_data, target_column)
+
+# Combine the results into a data frame for comparison
+comparison <- data.frame(
+  model = c("NN", "Ridge", "Stepwise", "Linear", "Log", "Transformed"),
+  pseudo_r2 = c(results_nn$pseudo_r2, results_ridge$pseudo_r2, results_stepwise$pseudo_r2,
+                results_linear$pseudo_r2, results_log$pseudo_r2, results_transformed$pseudo_r2),
+  sse = c(results_nn$sse, results_ridge$sse, results_stepwise$sse,
+          results_linear$sse, results_log$sse, results_transformed$sse),
+  rmse = c(results_nn$rmse, results_ridge$rmse, results_stepwise$rmse,
+           results_linear$rmse, results_log$rmse, results_transformed$rmse),
+  normality_p_value = c(results_nn$normality_p_value, results_ridge$normality_p_value, results_stepwise$normality_p_value,
+                        results_linear$normality_p_value, results_log$normality_p_value, results_transformed$normality_p_value)
+)
+
+
+\newpage
+## VII. Ongoing Model Monitoring Plan (5 points)
+
+*How would you picture the model needing to be monitored, which quantitative thresholds and triggers would you set to decide when the model needs to be replaced? What are the assumptions that the model must comply with for its continuous use?*
+
+# Load the necessary libraries
+library(caret)
+library(glmnet)
+library(Metrics)
+
+# Assume you already have an initial model and a set of data
+initial_model <- glmnet(as.matrix(training_data[-target_column]), training_data[target_column], alpha = 0)
+
+# Define a function to calculate the RMSE of a model
+calculate_rmse <- function(model, data, target_column) {
+  predictions <- predict(model, as.matrix(data[-target_column]))
+  rmse <- rmse(data[target_column], predictions)
+  return(rmse)
+}
+
+# Define a model monitoring function
+monitor_model <- function(initial_model, new_data, target_column, threshold_increase = 0.10) {
+# Calculate the RMSE of the new data
+  new_rmse <- calculate_rmse(initial_model, new_data, target_column)
+  
+# Calculate the initial RMSE on the training data
+  initial_rmse <- calculate_rmse(initial_model, initial_data, target_column)
+  
+  if (new_rmse > initial_rmse * (1 + threshold_increase)) {
+    message("RMSE has increased by more than 10%, consider retraining the model.")
+# You can add code here to retrain the model if needed
+    # ...
+  } else {
+    message("Model performance is stable.")
+  }
+  
+# Add more checks, for example, data drift detection
+# For data drift detection, you can compare the statistical properties of new_data
+# with the initial_data to detect changes in the data distribution.
+# Here's a simple example to get you started:
+  
+# Calculate the mean and standard deviation for each numeric column in the initial data
+  initial_stats <- sapply(initial_data, function(col) if(is.numeric(col)) c(mean(col), sd(col)) else NA)
+  
+#Calculate the mean and standard deviation for each numeric column in the new data
+  new_stats <- sapply(new_data, function(col) if(is.numeric(col)) c(mean(col), sd(col)) else NA)
+  
+# Compare the statistics of initial_data and new_data
+  drift_detected <- any(abs(new_stats - initial_stats) > threshold)
+  
+  if (drift_detected) {
+    message("Data drift detected. Consider reevaluating the model and data preprocessing.")
+# Add code here to handle data drift, such as updating preprocessing steps or reevaluating the model.
+# ...
+  }
+}
+
+# Regularly run the model monitoring function
+monitor_model(initial_model, new_data, target_column)
+
+
+\newpage
+## VIII. Conclusion (5 points)
+
+*Summarize your results here. What is the best model for the data and why?*
+
+## Bibliography (7 points)
+
+*Please include all references, articles and papers in this section.*
+
+## Appendix (3 points)
+
+*Please add any additional supporting graphs, plots and data analysis.*
+
+

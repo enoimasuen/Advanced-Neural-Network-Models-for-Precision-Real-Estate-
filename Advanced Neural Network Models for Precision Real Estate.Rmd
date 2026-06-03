@@ -1,6 +1,6 @@
 ---
 title: "HARVARD EXTENSION SCHOOL"
-subtitle: "EXT CSCI E-106 Model Data Class Group Project Template"
+subtitle: "Advanced Neural Network Models for Precision Real Estate Model Group Project"
 author:
 - Author One Zongmin Liu
 - Author Two Enoghayin Imasuen

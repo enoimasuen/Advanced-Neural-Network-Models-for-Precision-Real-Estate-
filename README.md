@@ -67,7 +67,7 @@ By tuning hyperparameters like learning rate, dropout, and network depth, the mo
 
 ---
 
-##  Repository Structure
+##  Repository
 
 📄 Advanced Neural Network Models for Precision Real Estate.Rmd # Full report in R Markdown
 📄 Advanced Neural Network Models for Precision Real Estate.pdf # Rendered report

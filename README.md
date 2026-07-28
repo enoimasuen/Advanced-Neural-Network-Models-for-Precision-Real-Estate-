@@ -73,6 +73,6 @@ Zongmin Liu · Enoghayin Imasuen — Harvard Extension School
 
 ## 📬 Contact
 
-Created by **Enoghayin Jillient Imasuen**  
+**Enoghayin Jillient Imasuen**  
 🔗 [GitHub](https://github.com/enoimasuen) | [LinkedIn](https://www.linkedin.com/in/enoghayin-jillient-imasuen-9080b2236?)
 
